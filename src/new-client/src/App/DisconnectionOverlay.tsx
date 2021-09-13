@@ -69,6 +69,12 @@ const [useHideOverlay] = bind(
   true,
 )
 
+connectionStatus$.subscribe(
+  (value) => console.log(`connection status is ${value}`),
+  (err) => console.log("connection status errored with", err),
+  () => console.log("connection status completed"),
+)
+
 export const DisconnectionOverlay: React.FC = () => {
   return useHideOverlay() ? null : (
     <ModalContainer>

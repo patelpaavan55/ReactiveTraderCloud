@@ -18,6 +18,7 @@ export default function main() {
     connectToGateway({
       url: `${window.location.origin}/ws`,
       interceptor: noop,
+      autoReconnect: true,
       // useJson: true,
     })
   }
