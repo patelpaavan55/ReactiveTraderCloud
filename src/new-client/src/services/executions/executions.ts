@@ -31,22 +31,21 @@ const mapExecutionToPayload = (e: ExecutionRequest): ExecuteTradeRequest => {
 
 const mapResponseToTrade =
   (id: string) =>
-  ({ trade }: ExecutionResponse): ExecutionTrade => {
-    if (trade.status === TradeStatus.Pending) throw new Error("wait what?!") // TODO: talk with hydra team
-
-    return {
-      currencyPair: trade.currencyPair,
-      dealtCurrency: trade.dealtCurrency,
-      direction: trade.direction,
-      notional: trade.notional,
-      spotRate: trade.spotRate,
-      status: ExecutionStatus[trade.status],
-      tradeId: Number(trade.tradeId), // TODO: talk with hydra team
-      tradeDate: new Date(),
-      valueDate: new Date(trade.valueDate),
-      id,
-    }
-  }
+  ({ trade }: ExecutionResponse): ExecutionTrade => ({
+    currencyPair: trade.currencyPair,
+    dealtCurrency: trade.dealtCurrency,
+    direction: trade.direction,
+    notional: trade.notional,
+    spotRate: trade.spotRate,
+    status:
+      trade.status === TradeStatus.Pending
+        ? TradeStatus.Pending
+        : ExecutionStatus[trade.status],
+    tradeId: Number(trade.tradeId), // TODO: talk with hydra team
+    tradeDate: new Date(),
+    valueDate: new Date(trade.valueDate),
+    id,
+  })
 
 const executionsSubject = new Subject<ExecutionTrade>()
 

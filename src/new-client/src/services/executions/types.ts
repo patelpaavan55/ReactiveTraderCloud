@@ -1,4 +1,4 @@
-import { Direction } from "../trades"
+import { Direction, TradeStatus } from "../trades"
 
 export interface TradeRaw {
   CurrencyPair: string
@@ -48,7 +48,7 @@ export enum ExecutionStatus {
 }
 
 export interface ExecutionTrade extends ExecutionRequest {
-  status: ExecutionStatus.Done | ExecutionStatus.Rejected
+  status: ExecutionStatus.Done | ExecutionStatus.Rejected | TradeStatus.Pending
   tradeId: number
   valueDate: Date
   tradeDate: Date
