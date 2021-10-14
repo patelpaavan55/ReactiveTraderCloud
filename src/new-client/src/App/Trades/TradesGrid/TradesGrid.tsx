@@ -1,14 +1,15 @@
-import { broadcast } from "@finos/fdc3"
-import styled, { css } from "styled-components"
-import { TradeStatus } from "@/services/trades"
-import { colConfigs, colFields, useTableTrades } from "../TradesState"
+import styled from "styled-components"
+import { colFields, useTableTrades } from "../TradesState"
 import { TableHeadCellContainer } from "./TableHeadCell"
+import { EmptyTableRow, TableBodyRowContainer } from "./TableBodyRow"
+import { useEffect, useState } from "react"
 
 const TableWrapper = styled.div`
   height: calc(100% - 4.75rem);
   overflow-x: scroll;
   overflow-y: scroll;
 `
+
 const Table = styled.table`
   background-color: ${({ theme }) => theme.core.lightBackground};
   position: relative;
@@ -21,54 +22,17 @@ const Table = styled.table`
     display: none;
   }
 `
+
 const TableHead = styled.thead`
   font-size: 0.675rem;
   text-transform: uppercase;
 `
+
 const TableHeadRow = styled.tr`
   vertical-align: center;
   height: 2rem;
 `
 
-const pendingBackgroundColor = css`
-  background-color: ${({ theme }) => theme.core.alternateBackground};
-`
-
-const TableBodyRow = styled.tr<{ pending?: boolean }>`
-  &:nth-child(even) {
-    background-color: ${({ theme }) => theme.core.darkBackground};
-  }
-  &:hover {
-    background-color: ${({ theme }) => theme.core.alternateBackground};
-  }
-  height: 2rem;
-  ${({ pending }) => pending && pendingBackgroundColor}
-`
-
-const TableBodyCell = styled.td<{ numeric?: boolean; rejected?: boolean }>`
-  text-align: ${({ numeric }) => (numeric ? "right" : "left")};
-  padding-right: ${({ numeric }) => (numeric ? "1.6rem;" : "0.1rem;")};
-  position: relative;
-  &:before {
-    content: " ";
-    display: ${({ rejected }) => (rejected ? "block;" : "none;")};
-    position: absolute;
-    top: 50%;
-    left: 0;
-    border-bottom: 1px solid red;
-    width: 100%;
-  }
-`
-const StatusIndicator = styled.td<{ status?: TradeStatus }>`
-  width: 18px;
-  border-left: 6px solid
-    ${({ status, theme: { accents } }) =>
-      status === TradeStatus.Done
-        ? accents.positive.base
-        : status === TradeStatus.Rejected
-        ? accents.negative.base
-        : "inherit"};
-`
 const StatusIndicatorSpacer = styled.th`
   width: 18px;
   top: 0;
@@ -78,16 +42,14 @@ const StatusIndicatorSpacer = styled.th`
 `
 
 export const TradesGrid: React.FC = () => {
+  const [isInitialRender, setIsInitialRender] = useState<boolean>(true)
   const trades = useTableTrades()
 
-  const tryBroadcastContext = (symbol: string) => {
-    if (window.fdc3) {
-      broadcast({
-        type: "fdc3.instrument",
-        id: { ticker: symbol },
-      })
+  useEffect(() => {
+    if (isInitialRender && trades.length) {
+      setIsInitialRender(false)
     }
-  }
+  }, [trades, isInitialRender])
 
   return (
     <TableWrapper>
@@ -106,37 +68,14 @@ export const TradesGrid: React.FC = () => {
         <tbody role="grid">
           {trades.length ? (
             trades.map((trade) => (
-              <TableBodyRow
+              <TableBodyRowContainer
                 key={trade.tradeId}
-                pending={trade.status === TradeStatus.Pending}
-                onClick={() => tryBroadcastContext(trade.symbol)}
-              >
-                <StatusIndicator
-                  status={trade.status}
-                  aria-label={trade.status}
-                />
-                {colFields.map((field, i) => (
-                  <TableBodyCell
-                    key={field}
-                    numeric={
-                      colConfigs[field].filterType === "number" &&
-                      field !== "tradeId"
-                    }
-                    rejected={trade.status === "Rejected"}
-                  >
-                    {colConfigs[field].valueFormatter?.(trade[field]) ??
-                      trade[field]}
-                  </TableBodyCell>
-                ))}
-              </TableBodyRow>
+                trade={trade}
+                isInitialRender={isInitialRender}
+              />
             ))
           ) : (
-            <TableBodyRow>
-              <StatusIndicatorSpacer aria-hidden={true} />
-              <TableBodyCell colSpan={colFields.length}>
-                No trades to show
-              </TableBodyCell>
-            </TableBodyRow>
+            <EmptyTableRow />
           )}
         </tbody>
       </Table>
