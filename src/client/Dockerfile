@@ -14,7 +14,6 @@ COPY ./package*.json ./
 RUN npm ci
 
 COPY . .
-RUN npm run test -- --coverage
 RUN npm run build
 
 # We use openresty to make use of the lua scripting for nginx

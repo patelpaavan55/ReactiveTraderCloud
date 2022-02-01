@@ -58,11 +58,11 @@ namespace Adaptive.ReactiveTrader.Server.Pricing
       _marketAdapters.Add(new YahooFinanceCurrencyAdapter());
 
       var keys = PriceGenerators.Keys.ToArray();
-      var priceWalkTimer = new Timer {Interval = 50};
+      var priceWalkTimer = new Timer {Interval = 1};
       priceWalkTimer.Elapsed += delegate { PriceGenerators[keys[Random.Next(PriceGenerators.Count)]].UpdateWalkPrice(); };
       _disposables.Add(priceWalkTimer);
 
-      var marketRatesTimer = new Timer {Interval = 1000};
+      var marketRatesTimer = new Timer {Interval = 1};
       marketRatesTimer.Elapsed += async delegate
       {
         var now = GetThisHour();

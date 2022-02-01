@@ -9,7 +9,7 @@ export default class StompConfig {
     /* eslint-disable-next-line */
     const securePort = 443
     const useSecure = location.protocol === 'https:' || port === securePort
-    const defaultPort = port ? port : 80
-    this.brokerURL = useSecure ? `wss://${url}:${securePort}/ws` : `ws://${url}:${defaultPort}/ws`
+   // const defaultPort = port ? port : 80
+    this.brokerURL = useSecure ? `wss://${url}:${securePort}/ws` : `ws://${url}:15674/ws`
   }
 }
