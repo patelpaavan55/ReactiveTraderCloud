@@ -47,9 +47,10 @@ const connectionExists = (status: ConnectionStatus, dispose: Disposable) => {
 // Connect to Hydra gateway and store the disposable
 export const initConnection = async () => {
   const dispose = await connectToGateway({
-    url: `${window.location.origin}/ws`,
+    url: `http://localhost:5555`,
     interceptor: noop,
     autoReconnect: true,
+    useJson: true,
   })
   connectionDisposable$.next(dispose)
 }
