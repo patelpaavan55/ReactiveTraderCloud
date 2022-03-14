@@ -131,7 +131,8 @@ export class HydraHandler
         this.onNext(connection, message)
         break
       case "CANCEL":
-        this.subscriptions.get(message.correlationId)?.unsubscribe()
+        this.subscriptions.get(message.correlationId) &&
+          this.subscriptions.get(message.correlationId)!.unsubscribe()
         break
       default:
         console.warn("Unhandled message", message)

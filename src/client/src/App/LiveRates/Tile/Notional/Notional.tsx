@@ -89,6 +89,7 @@ const MAX_NOTIONAL = 1_000_000_000
 
 type Props = {
   id: string
+  symbol: string
   value: string
   onChange: (e: any) => void
   base: string
@@ -100,6 +101,7 @@ type Props = {
 
 export const NotionalInputInner: React.FC<Props> = ({
   id,
+  symbol,
   base,
   valid,
   disabled,
@@ -122,7 +124,11 @@ export const NotionalInputInner: React.FC<Props> = ({
         event.target.select()
       }}
     />
-    <ResetInputValue isVisible={canReset} onClick={onReset}>
+    <ResetInputValue
+      isVisible={canReset}
+      onClick={onReset}
+      data-testid={`notional-reset-${symbol}`}
+    >
       <FaRedo className="flipHorizontal" />
     </ResetInputValue>
     {!valid && <ErrorMessage>Max exceeded</ErrorMessage>}
@@ -140,6 +146,7 @@ export const NotionalInput: React.FC = () => {
   return (
     <NotionalInputInner
       id={id}
+      symbol={symbol}
       base={base}
       valid={valid}
       disabled={[QuoteStateStage.Received, QuoteStateStage.Requested].includes(

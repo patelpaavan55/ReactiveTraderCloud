@@ -37,6 +37,7 @@ const loader = (
     ariaLabel="Loading live FX exchange rates"
     minWidth="22rem"
     minHeight="22rem"
+    data-testid="live-rates-loader"
   />
 )
 export const LiveRates: React.FC = () => (

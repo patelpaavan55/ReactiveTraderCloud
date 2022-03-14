@@ -70,7 +70,11 @@ export const HistoricalGraphComponent = forwardRef<
   HTMLDivElement,
   HistoricalGraphComponentProps
 >(({ showTimer, path, active, showCenterLine }, ref) => (
-  <LineChartWrapper showTimer={showTimer} ref={ref}>
+  <LineChartWrapper
+    showTimer={showTimer}
+    ref={ref}
+    data-testid="historical-graph"
+  >
     <Svg>
       <Path
         stroke={active ? "#5f94f5" : "#737987"}
