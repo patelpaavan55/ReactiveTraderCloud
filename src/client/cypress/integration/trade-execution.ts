@@ -1,13 +1,32 @@
 import { format } from "date-fns"
+import { InlineFakeHost, HydraHandler } from "../../src/hydra-fake"
+import { services } from "../../src/services/services.fake"
 import { pricingServiceControls } from "../../src/services/prices/prices.fake"
 
-const getTile = (symbol: string) => cy.get(`[data-testid="tile-${symbol}"]`)
+const startFakeEnv = () => {
+  // Setup configuration for websocket endpoint
+  // Cypress.on("window:before:load", async (win) => {
+  //   window.localStorage.setItem("feature-hydra-use-json", "true");
+  //   window.configOverrides = window.configOverrides || {};
+  //   window.configOverrides.backendUrl = "http://localhost:5555";
+  // });
 
-const loadLiveRates = () => {
-  // cy.visit("https://web.dev.reactivetrader.com/")
-  cy.visit("http://localhost:1917")
-  cy.contains("Live Rates")
+  console.log("Starting fake env")
+
+  const hydra = new HydraHandler()
+  console.log("hydra", hydra)
+  services.forEach((svc) => hydra.subscribe(svc))
+  console.log("services", services)
+  const host = new InlineFakeHost(hydra, "http://localhost:5555/json")
+  console.log("host", host)
+
+  return {
+    dispose: () => host.dispose(),
+    host,
+  }
 }
+
+const getTile = (symbol: string) => cy.get(`[data-testid="tile-${symbol}"]`)
 
 const directionMap = {
   BUY: "bought",
@@ -48,8 +67,27 @@ const closeTradeReponse = (
     )
   })
 
-describe("Trade Execution", () => {
+describe("Trade Execution", async () => {
+  const { host } = await startFakeEnv()
   const symbol = "EURUSD"
+
+  const loadLiveRates = () => {
+    // cy.visit("https://web.dev.reactivetrader.com/")
+    cy.visit("http://localhost:1917", {
+      onBeforeLoad: (win) => {
+        const originalWs = win.WebSocket
+        ;(win as any).WebSocket = function (url: string, protocols: any) {
+          console.log("url", url)
+          if (url === "ws://localhost:1917/") {
+            // This is webpack live reload
+            return new originalWs(url, protocols)
+          }
+          return new host.Websocket(url, protocols)
+        }
+      },
+    })
+    cy.contains("Live Rates")
+  }
 
   before(loadLiveRates)
 
