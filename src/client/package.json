@@ -43,7 +43,6 @@
   },
   "dependencies": {
     "@adaptive/hydra-platform": "^3.40.0",
-    "@finos/fdc3": "^1.2.0",
     "@openfin/workspace": "^6.1.6",
     "@openfin/workspace-platform": "^6.1.6",
     "@react-rxjs/core": "^0.8.2",
