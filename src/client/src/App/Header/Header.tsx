@@ -10,6 +10,11 @@ import {
   Fill,
 } from "./Header.styles"
 import { PWABanner, PWAInstallBanner, PWALaunchButton } from "./PWA"
+import { IS_CREDIT_ENABLED, ROUTES_CONFIG } from "@/constants"
+import InstrumentTypeSelector, {
+  InstrumentType,
+} from "./InstrumentTypeSelector"
+import { useHistory, useLocation } from "react-router"
 
 interface Props {
   logo?: ReactNode
@@ -40,7 +45,29 @@ const defaultLogo = (
 
 const defaultFiller = <Fill aria-hidden={true} />
 
-const defaultSwitches = <ThemeSwitcher />
+const DefaultSwitches: FC = () => {
+  const history = useHistory()
+  const location = useLocation()
+  const initialInstrumentSelected =
+    location.pathname === ROUTES_CONFIG.credit
+      ? InstrumentType.CREDIT
+      : InstrumentType.FX
+  const handleInstrumentTypeSelection = (instrumentType: InstrumentType) => {
+    history.push(
+      instrumentType === InstrumentType.CREDIT ? ROUTES_CONFIG.credit : "/",
+    )
+  }
+  return (
+    <>
+      {IS_CREDIT_ENABLED && (
+        <InstrumentTypeSelector
+          {...{ handleInstrumentTypeSelection, initialInstrumentSelected }}
+        />
+      )}
+      <ThemeSwitcher />
+    </>
+  )
+}
 
 const defaultControls = <LoginControls />
 
@@ -64,7 +91,7 @@ const Header: FC<Props> = ({ logo, filler, controls, switches }) => {
         {filler || defaultFiller}
 
         <HeaderNav>
-          {switches || defaultSwitches}
+          {switches || <DefaultSwitches />}
           {controls || defaultControls}
           <PWALaunchButton state={banner} setIsModalOpen={setIsModalOpen} />
         </HeaderNav>
