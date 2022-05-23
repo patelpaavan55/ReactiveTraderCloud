@@ -1,5 +1,7 @@
 import { FC, useState } from "react"
 import Switch from "react-switch"
+import { ROUTES_CONFIG } from "@/constants"
+import { useLocation } from "react-router"
 import styled, { useTheme } from "styled-components"
 import { ThemeName, useTheme as useThemeName } from "@/theme"
 
@@ -16,22 +18,20 @@ const Label = styled.span`
 
 interface Props {
   handleInstrumentTypeSelection: (instrumentType: InstrumentType) => void
-  initialInstrumentSelected: InstrumentType
 }
-const InstrumentTypeSwitch: FC<Props> = ({
+export const InstrumentTypeSwitch: FC<Props> = ({
   handleInstrumentTypeSelection,
-  initialInstrumentSelected,
 }) => {
   const theme = useTheme()
   const { themeName } = useThemeName()
-
+  const location = useLocation()
   let [isCreditSelected, setCreditSelected] = useState(
-    initialInstrumentSelected === InstrumentType.CREDIT,
+    location.pathname === ROUTES_CONFIG.credit,
   )
+
   const mainColor =
     themeName === ThemeName.Light ? theme.primary.base : theme.primary[1]
   const handleColor = theme.accents.primary.base
-
   return (
     <>
       <Label>{InstrumentType.FX}</Label>

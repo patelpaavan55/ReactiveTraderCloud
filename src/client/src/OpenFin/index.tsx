@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Switch } from "react-router-dom"
+import styled from "styled-components"
 import { Analytics } from "@/App/Analytics"
 import { Trades } from "@/App/Trades"
 import { Snapshots } from "./Snapshots/Snapshots"
@@ -11,6 +12,15 @@ import { BASE_PATH, ROUTES_CONFIG } from "@/constants"
 import { LiveRates } from "@/App/LiveRates"
 import { TornOutTile } from "@/App/LiveRates/Tile/TearOut/TornOutTile"
 import { DisconnectionOverlay } from "@/components/DisconnectionOverlay"
+
+const Placeholder = styled.div`
+  font-size: 3em;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+`
 
 export const OpenFinApp: React.FC = () => (
   <BrowserRouter basename={BASE_PATH}>
@@ -66,6 +76,16 @@ export const OpenFinApp: React.FC = () => (
             </>
           )
         }}
+      />
+      <Route
+        exact
+        path={ROUTES_CONFIG.credit}
+        render={() => (
+          <DocTitle title="Credit">
+            <Placeholder>Credit Dashboard Placeholder</Placeholder>
+            <DisconnectionOverlay />
+          </DocTitle>
+        )}
       />
       <Route path="/contact" render={() => <OpenFinContactDisplay />} />
       <Route path="/openfin-window-frame" render={() => <WindowFrame />} />

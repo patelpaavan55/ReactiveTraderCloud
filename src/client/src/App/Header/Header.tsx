@@ -11,9 +11,7 @@ import {
 } from "./Header.styles"
 import { PWABanner, PWAInstallBanner, PWALaunchButton } from "./PWA"
 import { IS_CREDIT_ENABLED, ROUTES_CONFIG } from "@/constants"
-import InstrumentTypeSelector, {
-  InstrumentType,
-} from "./InstrumentTypeSelector"
+import InstrumentTypeSwitch, { InstrumentType } from "./InstrumentTypeSwitch"
 import { useHistory, useLocation } from "react-router"
 
 interface Props {
@@ -60,7 +58,7 @@ const DefaultSwitches: FC = () => {
   return (
     <>
       {IS_CREDIT_ENABLED && (
-        <InstrumentTypeSelector
+        <InstrumentTypeSwitch
           {...{ handleInstrumentTypeSelection, initialInstrumentSelected }}
         />
       )}
@@ -89,7 +87,6 @@ const Header: FC<Props> = ({ logo, filler, controls, switches }) => {
       <AppHeaderRoot>
         {logo || defaultLogo}
         {filler || defaultFiller}
-
         <HeaderNav>
           {switches || <DefaultSwitches />}
           {controls || defaultControls}
