@@ -45,7 +45,7 @@
       "purpose": "any maskable"
     }
   ],
-  "start_url": "/",
+  "start_url": "<BASE_URL>/",
   "display": "standalone",
   "theme_color": "#2e3543",
   "background_color": "#2e3543"
